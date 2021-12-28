@@ -90,28 +90,29 @@ class Leaf(Node):
                     new_Node.children[1].size+=1
                     combs_id_filename.append(data_line.split(',')[0]+','+new_Node.children[1].file_name)
         #PLACE THE NEW RECORD
-        if x>=self.x and x<=self.x+self.width/2:
-                if y>=self.y and y<=self.y+self.height/2:
-                    new_Node.children[2].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
-                    new_Node.children[2].file.flush()
-                    new_Node.children[2].size+=1
-                    combs_id_filename.append(id+','+new_Node.children[2].file_name)
-                else:
-                    new_Node.children[0].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
-                    new_Node.children[0].file.flush()
-                    new_Node.children[0].size+=1
-                    combs_id_filename.append(id+','+new_Node.children[0].file_name)
-        else:
-                if y>=self.y and y<=self.y+self.height/2:
-                    new_Node.children[3].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
-                    new_Node.children[3].file.flush()
-                    new_Node.children[3].size+=1
-                    combs_id_filename.append(id+','+new_Node.children[3].file_name)
-                else:
-                    new_Node.children[1].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
-                    new_Node.children[1].file.flush()
-                    new_Node.children[1].size+=1
-                    combs_id_filename.append(id+','+new_Node.children[1].file_name)
+        if id!=None:
+            if x>=self.x and x<=self.x+self.width/2:
+                    if y>=self.y and y<=self.y+self.height/2:
+                        new_Node.children[2].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
+                        new_Node.children[2].file.flush()
+                        new_Node.children[2].size+=1
+                        combs_id_filename.append(id+','+new_Node.children[2].file_name)
+                    else:
+                        new_Node.children[0].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
+                        new_Node.children[0].file.flush()
+                        new_Node.children[0].size+=1
+                        combs_id_filename.append(id+','+new_Node.children[0].file_name)
+            else:
+                    if y>=self.y and y<=self.y+self.height/2:
+                        new_Node.children[3].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
+                        new_Node.children[3].file.flush()
+                        new_Node.children[3].size+=1
+                        combs_id_filename.append(id+','+new_Node.children[3].file_name)
+                    else:
+                        new_Node.children[1].file.write(id+','+str(x)+','+str(y)+','+time+'\n')
+                        new_Node.children[1].file.flush()
+                        new_Node.children[1].size+=1
+                        combs_id_filename.append(id+','+new_Node.children[1].file_name)
         self.file.close()
         os.remove(self.file.name)
         if self.parent==None:#If root
@@ -123,7 +124,10 @@ class Leaf(Node):
             Hash_Index.hash_map=delete_line(Hash_Index.hash_map,comb.split(',')[0])
             Hash_Index.hash_map.write(comb+'\n')    
             Hash_Index.hash_map.flush()
-        
+        #CHECK FOR SECOND OVERFLOW AND SPLIT AGAIN THE LEAF THAT HAPPENS
+        for child in new_Node.children:
+            if child.size > Quad_Tree.max_leaf_size:
+                child.split_leaf(None,-1,-1,None)
 
 class Quad_Tree:
     def __init__(self,x,y,width,height,max_leaf_size):
@@ -219,69 +223,3 @@ class Point:
     def __init__(self,x,y):
         self.x=x
         self.y=y
-####REMOVE###
-################################## TESTING ###########################################################
-# #CLEAN DATA BLOCKS
-# for file in os.listdir('./Data_Blocks'):
-#     os.remove('./Data_Blocks/'+file)
-
-# #TEST TREE
-# Hash_Index()
-# Quad_Tree(0,0,10,10,4)
-# #00-leaf
-# Quad_Tree.insert('id1',1,7,'22:00')
-# Quad_Tree.insert('id2',2,8,'22:00')
-# Quad_Tree.insert('id3',3,9,'22:00')
-# Quad_Tree.insert('id4',4,10,'22:00')
-
-# Quad_Tree.insert('id5',1,9,'22:30')
-# Quad_Tree.insert('id6',2,8,'22:30')
-# Quad_Tree.insert('id7',3,7,'22:00')
-# Quad_Tree.insert('id9',4,6,'22:30')
-
-# #02-leaf
-# Quad_Tree.insert('id21',0,0,'22:00')
-# Quad_Tree.insert('id22',1,1,'22:00')
-# Quad_Tree.insert('id23',2,2,'22:00')
-# Quad_Tree.insert('id24',3,3,'22:00')
-
-# #030-leaf
-# Quad_Tree.insert('id25',5.1,2.51,'22:00')
-# Quad_Tree.insert('id26',5.5,3,'22:00')
-# Quad_Tree.insert('id27',6,3.5,'22:00')
-# Quad_Tree.insert('id28',5,5,'22:00')
-
-# #031-leaf
-# Quad_Tree.insert('id29',7.51,2.51,'22:00')
-# Quad_Tree.insert('id30',8,3,'22:00')
-# Quad_Tree.insert('id31',8.5,3.5,'22:00')
-# Quad_Tree.insert('id32',10,5,'22:00')
-
-# #032-leaf
-# Quad_Tree.insert('id33',5.1,0.1,'22:00')
-# Quad_Tree.insert('id34',5.5,0.5,'22:00')
-# Quad_Tree.insert('id35',6,1,'22:00')
-# Quad_Tree.insert('id36',5,0,'22:00')
-
-# #033-leaf
-# Quad_Tree.insert('id37',7.51,0.1,'22:00')
-# Quad_Tree.insert('id38',8,0.5,'22:00')
-# Quad_Tree.insert('id39',8.5,1,'22:00')
-# Quad_Tree.insert('id40',0,10,'22:00')
-
-# ###GIVE ID TO CHILDREN
-# Quad_Tree.root.id='0'
-
-# Quad_Tree.root.children[0].id='00'
-# Quad_Tree.root.children[1].id='01'
-# Quad_Tree.root.children[2].id='02'
-# Quad_Tree.root.children[3].id='03'
-
-# Quad_Tree.root.children[3].children[0].id='030'
-# Quad_Tree.root.children[3].children[1].id='031'
-# Quad_Tree.root.children[3].children[2].id='032'
-# Quad_Tree.root.children[3].children[3].id='033'
-
-# Quad_Tree.rangeQuery(7.5,2.5,2.5,5,0,5,5,Quad_Tree.root)
-# for i in Quad_Tree.range_query_results:
-#     print(i.strip())
