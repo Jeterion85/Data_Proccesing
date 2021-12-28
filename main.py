@@ -17,18 +17,20 @@ x_low=-10.0
 y_low=45.0
 width=10
 height=6
-sector_size=input('Please enter the sector size(default:512 bytes):')
+sector_size=512#input('Please enter the sector size(default:512 bytes):')
 if sector_size=='':
     sector_size=512
 else:
     sector_size=int(sector_size)
 max_leaf_size=math.floor(47/sector_size)
+print(max_leaf_size)
+exit()
 Quad_Tree(x_low,y_low,width,height,max_leaf_size)
 Hash_Index()
-x=float(input('Please enter the Longitude of the accident(-10:0):'))
-y=float(input('Plese enter the Latitude of the accident(45,51):'))
-signal_range=float(input('Please enter the signal range(unit:km):'))
-accident_date=input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()
+x=-5#float(input('Please enter the Longitude of the accident(-10:0):'))
+y=48#float(input('Plese enter the Latitude of the accident(45,51):'))
+signal_range=100#float(input('Please enter the signal range(unit:km):'))
+accident_date='30-10-2015 22:30:45'#input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()
 a_day=int(accident_date.split(' ')[0].split('-')[0])
 a_month=int(accident_date.split(' ')[0].split('-')[1])
 a_year=int(accident_date.split(' ')[0].split('-')[2])
