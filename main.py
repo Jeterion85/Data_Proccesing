@@ -22,7 +22,7 @@ if sector_size=='':
     sector_size=512
 else:
     sector_size=int(sector_size)
-max_leaf_size=math.floor(47/sector_size)
+max_leaf_size=math.floor(sector_size/47)
 print(max_leaf_size)####FOR SOME REASON IT'S ZERO FIX ITT
 exit()
 Quad_Tree(x_low,y_low,width,height,max_leaf_size)
