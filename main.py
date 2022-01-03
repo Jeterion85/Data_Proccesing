@@ -17,20 +17,18 @@ x_low=-10.0
 y_low=45.0
 width=10
 height=6
-sector_size=512#input('Please enter the sector size(default:512 bytes):')
+sector_size=input('Please enter the sector size(default:512 bytes):')
 if sector_size=='':
     sector_size=512
 else:
     sector_size=int(sector_size)
 max_leaf_size=math.floor(sector_size/47)
-print(max_leaf_size)####FOR SOME REASON IT'S ZERO FIX ITT
-exit()
 Quad_Tree(x_low,y_low,width,height,max_leaf_size)
 Hash_Index()
-x=-5#float(input('Please enter the Longitude of the accident(-10:0):'))
-y=48#float(input('Plese enter the Latitude of the accident(45,51):'))
-signal_range=100#float(input('Please enter the signal range(unit:km):'))
-accident_date='30-10-2015 22:30:45'#input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()
+x=float(input('Please enter the Longitude of the accident(-10:0):'))
+y=float(input('Plese enter the Latitude of the accident(45,51):'))
+signal_range=float(input('Please enter the signal range(unit:km):'))
+accident_date=input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()
 a_day=int(accident_date.split(' ')[0].split('-')[0])
 a_month=int(accident_date.split(' ')[0].split('-')[1])
 a_year=int(accident_date.split(' ')[0].split('-')[2])
@@ -39,6 +37,8 @@ a_minute=int(accident_date.split(' ')[1].split(':')[1])
 a_second=int(accident_date.split(' ')[1].split(':')[2])
 accident_date=datetime.datetime(day=a_day,month=a_month,year=a_year,hour=a_hour,minute=a_minute,second=a_second)
 for line in open('./Test_data/Test.csv','r').readlines():
+    line=line.strip()
+    print(line)
     date=line.split(',')[3]
     day=int(date.split(' ')[0].split('-')[0])
     month=int(date.split(' ')[0].split('-')[1])
