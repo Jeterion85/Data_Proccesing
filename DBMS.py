@@ -29,6 +29,9 @@ class Inner_Node(Node):
     def compact(self):
         sum_records=0
         for child in self.children:
+            if child.__class__.__name__!='Leaf':
+                sum_records+=1
+                continue
             sum_records+=child.size
         if sum_records==0:
             file_name=self.children[0].file_name[:len(self.children[0].file_name)-5]
@@ -37,6 +40,7 @@ class Inner_Node(Node):
                 child.file.close()
                 os.remove(child.file.name)
             self.parent.children[self.parent_index]=new_Leaf
+            self.parent.compact()
 
 class Leaf(Node):
     def __init__(self, x, y, width, height,file_name,parent,parent_index):

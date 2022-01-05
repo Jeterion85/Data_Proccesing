@@ -36,6 +36,7 @@ a_hour=int(accident_date.split(' ')[1].split(':')[0])
 a_minute=int(accident_date.split(' ')[1].split(':')[1])
 a_second=int(accident_date.split(' ')[1].split(':')[2])
 accident_date=datetime.datetime(day=a_day,month=a_month,year=a_year,hour=a_hour,minute=a_minute,second=a_second)
+start_time=time.time()
 for line in open('./Data/nari_dynamic.csv','r'):
     line=line.strip()
     date=line.split(',')[3]
@@ -47,6 +48,9 @@ for line in open('./Data/nari_dynamic.csv','r'):
     second=int(date.split(' ')[1].split(':')[2])
     current_date=datetime.datetime(day=day,month=month,year=year,hour=hour,minute=minute,second=second)
     if current_date>accident_date:
+        print('------------------------CONSTRUCTION TIME------------------------')
+        print(time.time()-start_time)
+        print('------------------------BEGGINING RANGE QUERY------------------------')
         start_time=time.time()
         line=line.strip()
         Quad_Tree.insert(line.split(',')[0],float(line.split(',')[1]),float(line.split(',')[2]),line.split(',')[3])      
@@ -58,8 +62,12 @@ for line in open('./Data/nari_dynamic.csv','r'):
         break
     else:
         line=line.strip()
+        print(f'Current date"{current_date}')###REMOVE
         Quad_Tree.insert(line.split(',')[0],float(line.split(',')[1]),float(line.split(',')[2]),line.split(',')[3])
+###WRITE RESULTS
+results=open('results.csv','w')
 for result in Quad_Tree.range_query_results:
-    print(result.strip())
+    results.write(result.strip()+'\n')
+results.close()
 end_time=time.time()
-print(f'TOTAL TIME:{end_time-start_time} sec')
+print(f'TOTAL QUERY TIME:{end_time-start_time} sec')
