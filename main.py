@@ -10,13 +10,6 @@ import math
 import time
 import sys
 
-print(sys.argv)
-print(sys.argv[1])
-print(sys.argv[2])
-print(sys.argv[3])
-print(sys.argv[5]+' '+sys.argv[6])
-exit()
-
 for file in os.listdir('./Data_Blocks/'):
     os.remove('Data_Blocks/'+file)
 
