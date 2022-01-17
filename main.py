@@ -64,7 +64,6 @@ for line in open('./Data/nari_dynamic.csv','r'):
     else:
         insertion_start_time=time.time()
         line=line.strip()
-        print(f'INSERTING:{line}')###REMOVE
         Quad_Tree.insert(line.split(',')[0],float(line.split(',')[1]),float(line.split(',')[2]),line.split(',')[3])
         insertion_time_list.append(time.time()-insertion_start_time)
 ###WRITE RESULTS
