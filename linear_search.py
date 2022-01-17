@@ -2,14 +2,13 @@ import datetime
 import geopy.distance
 import time
 from file_read_backwards import FileReadBackwards
+import sys
 
-
-
-x=float(input('Please enter the Longitude of the accident(-10:0):'))
-y=float(input('Plese enter the Latitude of the accident(45,51):'))
+x=float(sys.argv[1])#float(input('Please enter the Longitude of the accident(-10:0):'))--INSERT
+y=float(sys.argv[2])#float(input('Plese enter the Latitude of the accident(45,51):'))--INSERT
 origin=(x,y)
-signal_range=float(input('Please enter the signal range(unit:km):'))
-accident_date=input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()
+signal_range=float(sys.argv[3])#float(input('Please enter the signal range(unit:km):'))--INSERT
+accident_date=sys.argv[4]+' '+sys.argv[5]#input('Plese enter the the date of the accident(d-m-Y H:M:S):').strip()--INSERT
 a_day=int(accident_date.split(' ')[0].split('-')[0])
 a_month=int(accident_date.split(' ')[0].split('-')[1])
 a_year=int(accident_date.split(' ')[0].split('-')[2])
@@ -20,6 +19,7 @@ accident_date=datetime.datetime(day=a_day,month=a_month,year=a_year,hour=a_hour,
 linear_database=open('./linear_database.csv','w')
 visited_ships_lines=[]
 start_time=time.time()
+insertion_time_list=[]
 for line in open('./Data/nari_dynamic.csv','r'):
     line=line.strip()
     date=line.split(',')[3]
@@ -29,13 +29,15 @@ for line in open('./Data/nari_dynamic.csv','r'):
     hour=int(date.split(' ')[1].split(':')[0])
     minute=int(date.split(' ')[1].split(':')[1])
     second=int(date.split(' ')[1].split(':')[2])
-    current_date=datetime.datetime(day=day,month=month,year=year,hour=hour,minute=minute,second=second)
+    current_date=datetime.datetime(day=day,month=month,year=year,hour=hour,minute=minute,second=second) 
     if current_date<=accident_date:
+        insertion_start_time=time.time()
         linear_database.write(f'{line}\n')
+        insertion_time_list.append(time.time()-insertion_start_time)
     else:
         linear_database.write(f'{line}\n')
-        print(f'BreakLine:{line}')###REMOVE
         break
+print(f'AVERAGE INSERTION TIME:{(sum(insertion_time_list)/len(insertion_time_list))}')
 print(f'TOTAL CONSTRUCTION TIME:{time.time()-start_time}sec\n')
 linear_database.close()
 f=open('./linear_results.csv','w')
