@@ -1,4 +1,4 @@
-main_results=open('./results.csv','r')
+main_results=open('./main_results.csv','r')
 linear_results=open('./linear_results.csv','r')
 
 for linear_line in linear_results:

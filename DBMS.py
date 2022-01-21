@@ -57,8 +57,9 @@ class Leaf(Node):
             self.file.write(id+','+str(x)+','+str(y)+','+time+'\n')
             self.file.flush()
             self.size+=1
-            Hash_Index.hash_map.write(id+','+self.file_name+'\n')
-            Hash_Index.hash_map.flush()
+            # Hash_Index.hash_map.write(id+','+self.file_name+'\n')
+            # Hash_Index.hash_map.flush()
+            Hash_Index.insert(id,self.file_name)
     def split_leaf(self,id,x,y,time):
         new_Node=Inner_Node(self.x,self.y,self.width,self.height,self.parent,self.parent_index)
         new_Node.children.append(Leaf(self.x,self.y+self.height/2,self.width/2,self.height/2,self.file_name.split('.')[0]+'0.csv',new_Node,0))
@@ -118,21 +119,22 @@ class Leaf(Node):
                         new_Node.children[1].size+=1
                         combs_id_filename.append(id+','+new_Node.children[1].file_name)
         self.file.close()
-        os.remove(self.file.name)
         if self.parent==None:#If root
             Quad_Tree.root=new_Node
         else:
             self.parent.children[self.parent_index]=new_Node
         
         for comb in combs_id_filename:
-            Hash_Index.hash_map=delete_line(Hash_Index.hash_map,comb.split(',')[0])
-            Hash_Index.hash_map.write(comb+'\n')    
-            Hash_Index.hash_map.flush()
+            #Hash_Index.hash_map=delete_line(Hash_Index.hash_map,comb.split(',')[0])
+            Hash_Index.remove(comb.split(',')[0])
+            # Hash_Index.hash_map.write(comb+'\n')    
+            # Hash_Index.hash_map.flush()
+            Hash_Index.insert(comb.split(',')[0],comb.split(',')[1])
         #CHECK FOR SECOND OVERFLOW AND SPLIT AGAIN THE LEAF THAT HAPPENS
         for child in new_Node.children:
             if child.size > Quad_Tree.max_leaf_size:
                 child.split_leaf(None,-1,-1,None)
-
+        os.remove(self.file.name)
 class Quad_Tree:
     def __init__(self,x,y,width,height,max_leaf_size):
         Quad_Tree.root=Leaf(x,y,width,height,'0.csv',None,-1)
@@ -204,20 +206,38 @@ class Quad_Tree:
         
 class Hash_Index:
     def __init__(self):
-        Hash_Index.hash_map=open('./hash_map.csv','w+',encoding='ASCII')
+        Hash_Index.hash_map=[]
     def remove(id):
-        Hash_Index.hash_map.seek(0,0)
-        for index_line in Hash_Index.hash_map.readlines():
-            if index_line.split(',')[0]==id:
-                block=open('./Data_Blocks/'+index_line.split(',')[1].strip(),encoding='ASCII')
-                for block_line in block.readlines():
-                    if block_line.split(',')[0]==id:
-                        x=float(block_line.split(',')[1])
-                        y=float(block_line.split(',')[2])
-                        Hash_Index.hash_map=delete_line(Hash_Index.hash_map,id)
-                        block.close()
-                        return (x,y)
+        pointer=Hash_Index.binary_seach(Hash_Index.hash_map,0,len(Hash_Index.hash_map)-1,id)
+        if pointer!=-1:
+            file_name=Hash_Index.hash_map[pointer].split(',')[1]
+            Hash_Index.hash_map.remove(f'{id},{file_name}')
+            block=open(f'./Data_Blocks/{file_name}','r')
+            for block_line in block.readlines():
+                if block_line.split(',')[0]==id:
+                    x=block_line.split(',')[1]
+                    y=block_line.split(',')[2]
+                    block.close()
+                    return (float(x),float(y))
         return (None,None)
+    def insert(id,file_name):
+        insert_index=len(Hash_Index.hash_map)+1
+        for index in range(len(Hash_Index.hash_map)):
+            if id < Hash_Index.hash_map[index]:
+                insert_index=index
+                break
+        Hash_Index.hash_map.insert(insert_index,f'{id},{file_name}')
+    def binary_seach(arr,l,r,x):
+        if r>=l:
+            mid=(r+l)//2
+            if arr[mid].split(',')[0]==x:
+                return mid
+            elif arr[mid].split(',')[0]>x:
+                return Hash_Index.binary_seach(arr,l,mid-1,x)
+            else:
+                return Hash_Index.binary_seach(arr,mid+1,r,x)
+        else:
+            return -1
 class Rectangle:
     def __init__(self,x,y,width,height):
         self.l=Point(x,y+height)
